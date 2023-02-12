@@ -1,6 +1,6 @@
 {
-  "name": "@repeat/cache",
-  "version": "0.0.1",
+  "name": "result-cache",
+  "version": "0.0.2",
   "author": {
     "name": "Jon Lambert",
     "email": "hi@jonlambert.co.uk",
@@ -15,13 +15,15 @@
     "@redis/client": "^1.5.5",
     "semantic-release": "^20.1.0",
     "tsup": "^6.6.2",
-    "typescript": "^4.9.5"
+    "typescript": "^4.9.5",
+    "vite": "^4.1.1",
+    "vitest": "^0.28.4"
   },
   "peerDependencies": {
     "@redis/client": "^1.5.5"
   },
   "scripts": {
-    "dev": "concurrently 'tsup --watch --sourcemap --dts --onSuccess \"tsc --emitDeclarationOnly --declaration\"' 'graphql-codegen -w'",
+    "dev": "concurrently 'tsup --watch --sourcemap --dts --onSuccess \"tsc --emitDeclarationOnly --declaration\"'",
     "build": "tsup --minify --clean --onSuccess \"tsc --emitDeclarationOnly --declaration\"",
     "lint": "npx eslint",
     "release": "semantic-release"

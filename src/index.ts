@@ -1,5 +1,6 @@
 import { CacheDriver } from './base';
 import { MemoryCache } from './memory';
+import { AfterSerialization } from './types';
 
 type Key = string | string[];
 
@@ -35,7 +36,7 @@ const defaultOptions = {
 };
 
 export const createCache = async (options?: Partial<CacheOptions>) => {
-  const { driver, enabled } = { ...defaultOptions, ...options };
+  const { driver, enabled, ttl } = { ...defaultOptions, ...options };
 
   // attempt to open the connection if appropriate to do so
   if (typeof driver.connect !== 'undefined' && !driver.connected?.()) {
@@ -52,7 +53,7 @@ export const createCache = async (options?: Partial<CacheOptions>) => {
     async cache<T>(fn: () => Promise<T>, key: Key): Promise<T> {
       // Skip the cache entirely if not enabled
       if (!enabled) {
-        return await fn();
+        return await fn() as any;
       }
 
       const keyCopy = Array.isArray(key) ? key.join('.') : key;
@@ -71,11 +72,11 @@ export const createCache = async (options?: Partial<CacheOptions>) => {
       const result = await fn();
 
       // Cache result
-      await driver.set(keyCopy, result);
+      await driver.set(keyCopy, result, ttl);
 
       console.log(`[cache] [${keyCopy}] updated`);
 
-      return result;
+      return result as T;
     },
     async purge() {
       throw new Error('coming soon');

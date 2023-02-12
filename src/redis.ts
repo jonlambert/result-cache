@@ -18,8 +18,8 @@ export class RedisCache implements CacheDriver {
     return result ? JSON.parse(result) : undefined;
   }
 
-  async set(key: string, value: unknown): Promise<void> {
-    await this.client.set(key, JSON.stringify(value), { EX: 5 });
+  async set(key: string, value: unknown, ttl: number): Promise<void> {
+    await this.client.set(key, JSON.stringify(value), { EX: ttl });
   }
 
   async exists(key: string) {
