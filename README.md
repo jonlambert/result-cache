@@ -21,8 +21,8 @@ import { RedisDriver } from 'result-cache/redis';
 
 import { createClient } from '@redis/client';
 
-const client = createClient();
-const { cache } = createCache({ driver: new RedisDriver(client) });
+const driver = new RedisDriver(createClient());
+const { cache } = createCache({ driver });
 ```
 
 ## Caveats
