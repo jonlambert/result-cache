@@ -13,13 +13,23 @@ const result = await cache(() => fetch('api.example.com').then(response => respo
 
 ## Use with Redis
 
-By default, results will be stored in-memory. This is only suitable for development or testing - instead it's strongly recommended to use an external key/value store such as Redis.
+By default, records will be cached in memory (just a simple `Map`). This is only really advisable for development or testing. Instead, it's trivial to plug in an external key/value store (such as Redis).
+
+```ts
+import { createCache } from 'result-cache';
+import { RedisDriver } from 'result-cache/redis';
+
+import { createClient } from '@redis/client';
+
+const client = createClient();
+const { cache } = createCache({ driver: new RedisDriver(client) });
+```
 
 ## Caveats
 
 ### Serialisation
 
-Objects will be serialised before being written to the cache. Therefore, any unsupported attributes will be stripped when the cache is hit. To help guard against unexpected behaviour, the result of `cache(fn)` will match the return type of `fn`, with any symbols, functions, etc. marked as `optional`.
+Objects will be serialised before being written to the cache. Therefore, any unsupported attributes (functions, symbols) will be stripped when the cache is hit.
 
 ### Validation
 
