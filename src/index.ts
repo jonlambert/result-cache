@@ -1,6 +1,12 @@
 import { CacheDriver } from './base';
+import { getLogger } from './logging';
 import { MemoryCache } from './memory';
-import { AfterSerialization } from './types';
+
+if (typeof global.window !== 'undefined') {
+  throw new Error(
+    'global.window is defined. This package is not designed to be bundled in the browser.'
+  );
+}
 
 type Key = string | string[];
 
@@ -26,6 +32,8 @@ type CacheOptions = {
    */
   prefix?: Key;
 
+  verbose?: boolean;
+
   driver: CacheDriver;
 };
 
@@ -33,10 +41,12 @@ const defaultOptions = {
   ttl: 30e3,
   enabled: true,
   driver: new MemoryCache() as CacheDriver,
+  verbose: false,
 };
 
 export const createCache = async (options?: Partial<CacheOptions>) => {
-  const { driver, enabled, ttl } = { ...defaultOptions, ...options };
+  const { driver, enabled, ttl, verbose } = { ...defaultOptions, ...options };
+  const { info, debug } = getLogger(verbose);
 
   // attempt to open the connection if appropriate to do so
   if (typeof driver.connect !== 'undefined' && !driver.connected?.()) {
@@ -53,20 +63,20 @@ export const createCache = async (options?: Partial<CacheOptions>) => {
     async cache<T>(fn: () => Promise<T>, key: Key): Promise<T> {
       // Skip the cache entirely if not enabled
       if (!enabled) {
-        return await fn() as any;
+        return (await fn()) as any;
       }
 
       const keyCopy = Array.isArray(key) ? key.join('.') : key;
       const cached = await driver.get(keyCopy);
 
       if (cached) {
-        console.log(`[cache] [${keyCopy}] hit`);
+        debug(`[${keyCopy}] hit`);
         // unsure whether we should add validation here. probably out of scope for now.
         // should we just encourage the consumer to validate? or should we add protection by encouraging the supplying of validation?
         return cached as T;
       }
 
-      console.log(`[cache] [${keyCopy}] miss`);
+      debug(`[${keyCopy}] miss`);
 
       // Evaluate fn
       const result = await fn();
@@ -74,7 +84,7 @@ export const createCache = async (options?: Partial<CacheOptions>) => {
       // Cache result
       await driver.set(keyCopy, result, ttl);
 
-      console.log(`[cache] [${keyCopy}] updated`);
+      debug(`[${keyCopy}] updated`);
 
       return result as T;
     },
@@ -84,7 +94,6 @@ export const createCache = async (options?: Partial<CacheOptions>) => {
   };
 };
 
-
 type Cache = Awaited<ReturnType<typeof createCache>>;
 let defaultCache: Cache | undefined;
 
@@ -93,4 +102,4 @@ export const getDefaultCache = async () => {
     defaultCache = await createCache();
   }
   return defaultCache;
-}
+};

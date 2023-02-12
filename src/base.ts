@@ -3,6 +3,7 @@ export interface CacheDriver {
   set(key: string, value: unknown, ttl: number): Promise<void>;
   exists(key: string): Promise<boolean>;
 
-  connect?(): Promise<void>;
   connected?(): boolean;
+  connect?(): Promise<void>;
+  disconnect?(): Promise<void>;
 }

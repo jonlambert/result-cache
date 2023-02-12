@@ -1,17 +1,9 @@
-import * as Redis from '@redis/client';
+import type { RedisClientType } from '@redis/client';
 
 import { CacheDriver } from './base';
 
 export class RedisCache implements CacheDriver {
-  private client: Redis.RedisClientType;
-
-  constructor() {
-    this.client = Redis.createClient();
-  }
-
-  async connect() {
-    await this.client?.connect();
-  }
+  constructor(private readonly client: RedisClientType) {}
 
   async get(key: string): Promise<unknown> {
     const result = await this.client.get(key);
@@ -24,5 +16,13 @@ export class RedisCache implements CacheDriver {
 
   async exists(key: string) {
     return Boolean(await this.client.exists(key));
+  }
+
+  async connect() {
+    return this.client.connect();
+  }
+
+  async disconnect() {
+    return this.client.disconnect();
   }
 }
