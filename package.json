@@ -1,0 +1,28 @@
+{
+  "name": "@repeat/cache",
+  "version": "0.0.1",
+  "author": {
+    "name": "Jon Lambert",
+    "email": "hi@jonlambert.co.uk",
+    "url": "https://jonlambert.co.uk"
+  },
+  "main": "./dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jonlambert/repeat-cache"
+  },
+  "devDependencies": {
+    "@redis/client": "^1.5.5",
+    "tsup": "^6.6.2",
+    "typescript": "^4.9.5"
+  },
+  "peerDependencies": {
+    "@redis/client": "^1.5.5"
+  },
+  "scripts": {
+    "dev": "concurrently 'tsup --watch --sourcemap --dts --onSuccess \"tsc --emitDeclarationOnly --declaration\"' 'graphql-codegen -w'",
+    "build": "tsup --minify --clean --onSuccess \"tsc --emitDeclarationOnly --declaration\"",
+    "lint": "npx eslint",
+    "release": "semantic-release"
+  }
+}
