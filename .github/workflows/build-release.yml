@@ -13,18 +13,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v2
+      - name: Checkout Code
+        uses: actions/checkout@v2
 
-    - name: Setup pnpm
-      run: |
-        npm install -g pnpm
+      - name: Setup pnpm
+        run: |
+          npm install -g pnpm
 
-    - name: Build Project
-      run: |
-        pnpm build
+      - run: pnpm install
 
-    - name: Release Project
-      run: |
-        echo "//registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN" > ~/.npmrc
-        pnpm release
+      - name: Build Project
+        run: |
+          pnpm build
+
+      - name: Release Project
+        run: |
+          echo "//registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN" > ~/.npmrc
+          pnpm release
