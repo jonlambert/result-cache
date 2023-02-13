@@ -1,6 +1,6 @@
 import { CacheDriver } from './base';
 import { getLogger } from './logging';
-import { MemoryCache } from './memory';
+import { MemoryDriver } from './memory';
 
 if (typeof global.window !== 'undefined') {
   throw new Error(
@@ -37,10 +37,12 @@ type CacheOptions = {
   driver: CacheDriver;
 };
 
+const formatKey = (key: Key) => Array.isArray(key) ? key.join('.') : key;
+
 const defaultOptions = {
-  ttl: 30e3,
+  ttl: 30,
   enabled: true,
-  driver: new MemoryCache() as CacheDriver,
+  driver: new MemoryDriver() as CacheDriver,
   verbose: false,
 };
 
@@ -61,19 +63,26 @@ export const createCache = async (options?: Partial<CacheOptions>) => {
      * @returns Promise that resolves either a cached result of this function, or a fresh copy.
      */
     async cache<T>(fn: () => Promise<T>, key: Key): Promise<T> {
-      // Skip the cache entirely if not enabled
+      // Skip the cache entirely if disabled
       if (!enabled) {
         return (await fn()) as any;
       }
 
-      const keyCopy = Array.isArray(key) ? key.join('.') : key;
-      const cached = await driver.get(keyCopy);
+      const keyCopy = formatKey(key);
 
-      if (cached) {
-        debug(`[${keyCopy}] hit`);
-        // unsure whether we should add validation here. probably out of scope for now.
-        // should we just encourage the consumer to validate? or should we add protection by encouraging the supplying of validation?
-        return cached as T;
+      try {
+        const cached = await driver.get(keyCopy);
+        if (cached) {
+          debug(`[${keyCopy}] hit`);
+          // unsure whether we should add validation here. probably out of scope for now.
+          // should we just encourage the consumer to validate? or should we add protection by encouraging the supplying of validation?
+          return cached as T;
+        }
+      } catch (e) {
+        if (e instanceof Error) {
+          debug(`[${keyCopy}] error - ${e.message}`);
+        }
+        return await fn();
       }
 
       debug(`[${keyCopy}] miss`);
@@ -94,7 +103,7 @@ export const createCache = async (options?: Partial<CacheOptions>) => {
   };
 };
 
-type Cache = Awaited<ReturnType<typeof createCache>>;
+export type Cache = Awaited<ReturnType<typeof createCache>>;
 let defaultCache: Cache | undefined;
 
 export const getDefaultCache = async () => {
@@ -103,3 +112,5 @@ export const getDefaultCache = async () => {
   }
   return defaultCache;
 };
+
+export { MemoryDriver };

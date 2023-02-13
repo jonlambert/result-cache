@@ -1,6 +1,8 @@
 # Cache Promise Results
 
-Easily cache anything that returns a promise.
+Cleanly cache the result of any function that returns a promise.
+
+~2kb, zero-dependencies (redis optional).
 
 ```ts
 import { createCache } from 'result-cache';
@@ -29,11 +31,11 @@ const { cache } = createCache({ driver });
 
 ### Serialisation
 
-Objects will be serialised before being written to the cache. Therefore, any unsupported attributes (functions, symbols) will be stripped when the cache is hit.
+Objects will be serialised before being written to the cache. Therefore any unsupported attributes (functions, symbols) will be stripped when the cache is hit.
 
 ### Validation
 
-This library does not validate anything retrieved from the cache. As such, it is strongly recommended to consider any data returned as unstructured.
+This library does not validate anything retrieved from the cache. This responsibility should lie outside the library. As such, it is strongly recommended to consider any data returned as unstructured.
 
 ```ts
 import { z } from 'zod';

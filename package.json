@@ -1,6 +1,6 @@
 {
   "name": "result-cache",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "author": {
     "name": "Jon Lambert",
     "email": "hi@jonlambert.co.uk",
@@ -26,7 +26,7 @@
     "dev": "concurrently 'tsup --watch --sourcemap --dts --onSuccess \"tsc --emitDeclarationOnly --declaration\"'",
     "build": "tsup --minify --clean --onSuccess \"tsc --emitDeclarationOnly --declaration\"",
     "lint": "npx eslint",
-    "release": "semantic-release"
+    "release": "npx semantic-release"
   },
   "release": {
     "branches": [
