@@ -2,7 +2,7 @@
 
 Cleanly cache the result of any function that returns a promise.
 
-~2kb, zero-dependencies (redis optional).
+Zero dependencies (Redis optional)
 
 ```ts
 import { createCache } from 'result-cache';
