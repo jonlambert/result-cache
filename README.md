@@ -15,7 +15,7 @@ const result = await cache(() => fetch('api.example.com').then(response => respo
 
 ## Use with Redis
 
-By default, records will be cached in memory (just a simple `Map`). This is only really advisable for development or testing. Instead, configure the Redis driver:
+By default, records will be cached in memory (just a simple `Map`). This is only really advisable for development or testing. In production, configure the Redis driver:
 
 ```ts
 import { createCache } from 'result-cache';
