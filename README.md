@@ -4,11 +4,17 @@ Cleanly cache the result of any function that returns a promise. API heavily ins
 
 Zero dependencies (Redis optional)
 
+```bash
+npm install result-cache
+```
+
 ```ts
 import { createCache } from 'result-cache';
 
 const { cache } = createCache({ ttl: 30 });
 
+// If there's a previous value in the cache matching the key 'results', fetch and return it. 
+// Otherwise, execute the fetch call and cache the result.
 const result = await cache(() => fetch('api.example.com').then(response => response.json()), 'results');
 
 ```
