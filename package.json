@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "@redis/client": "^1.5.5",
+    "ioredis": "^5.3.1",
     "semantic-release": "^20.1.0",
     "tsup": "^6.6.2",
     "typescript": "^4.9.5",
@@ -20,7 +21,16 @@
     "vitest": "^0.28.4"
   },
   "peerDependencies": {
-    "@redis/client": "^1.5.5"
+    "@redis/client": "^1.5.5",
+    "ioredis": "^5.3.1"
+  },
+  "peerDependenciesMeta": {
+    "ioredis": {
+      "optional": true
+    },
+    "@redis/client": {
+      "optional": true
+    }
   },
   "scripts": {
     "dev": "concurrently 'tsup --watch --sourcemap --dts --onSuccess \"tsc --emitDeclarationOnly --declaration\"'",
