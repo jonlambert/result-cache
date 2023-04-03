@@ -1,1 +1,1 @@
-module.exports = require('./dist/redis.js');
+module.exports = require('./dist/ioredis.js');

@@ -1,1 +1,1 @@
-export * from '../dist/redis';
+export * from '../dist/ioredis';
