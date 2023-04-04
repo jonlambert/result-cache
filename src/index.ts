@@ -49,7 +49,7 @@ const defaultOptions = {
 };
 
 export const createCache = async (setup?: Partial<CacheOptions>) => {
-  const optionsWithDefaults = { ...defaultOptions, setup };
+  const optionsWithDefaults = { ...defaultOptions, ...setup };
   const { driver, verbose } = optionsWithDefaults;
   const { debug } = getLogger(verbose);
 
