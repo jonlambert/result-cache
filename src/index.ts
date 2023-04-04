@@ -37,6 +37,17 @@ type CacheOptions = IndividualCacheOptions & {
   verbose?: boolean;
 
   driver: CacheDriver;
+
+  /**
+   * This event is fired after the cache has been hit. Use this to hook into metrics.
+   */
+  onCacheHit?: (key: string) => void;
+
+  /**
+   * This event is fired when the cache has been missed and we need to
+   * re-execute the query. Use this to hook into metrics.
+   */
+  onCacheMiss?: (key: string) => void;
 };
 
 const formatKey = (key: Key) => (Array.isArray(key) ? key.join('.') : key);
@@ -50,7 +61,7 @@ const defaultOptions = {
 
 export const createCache = async (setup?: Partial<CacheOptions>) => {
   const optionsWithDefaults = { ...defaultOptions, ...setup };
-  const { driver, verbose } = optionsWithDefaults;
+  const { driver, verbose, onCacheHit, onCacheMiss } = optionsWithDefaults;
   const { debug } = getLogger(verbose);
 
   // attempt to open the connection if appropriate to do so
@@ -86,6 +97,7 @@ export const createCache = async (setup?: Partial<CacheOptions>) => {
 
         if (cached) {
           debug(`[${keyCopy}] hit`);
+          onCacheHit?.(keyCopy);
           // unsure whether we should add validation here. probably out of scope for now.
           // should we just encourage the consumer to validate? or should we add protection by encouraging the supplying of validation?
           return cached as T;
@@ -98,6 +110,7 @@ export const createCache = async (setup?: Partial<CacheOptions>) => {
       }
 
       debug(`[${keyCopy}] miss`);
+      onCacheMiss?.(keyCopy);
 
       // Evaluate fn
       const result = await fn();
