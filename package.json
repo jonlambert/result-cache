@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "@redis/client": "^1.5.5",
+    "concurrently": "^8.0.1",
     "ioredis": "^5.3.1",
     "semantic-release": "^20.1.0",
     "tsup": "^6.6.2",

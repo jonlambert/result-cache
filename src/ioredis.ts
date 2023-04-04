@@ -22,12 +22,4 @@ export class IORedisDriver implements CacheDriver {
   async exists(key: string) {
     return Boolean(await this.client.exists(key));
   }
-
-  async connect() {
-    return this.client.connect();
-  }
-
-  async disconnect() {
-    return this.client.disconnect();
-  }
 }
