@@ -82,7 +82,7 @@ export const createCache = async (setup?: Partial<CacheOptions>) => {
     async cache<T>(
       fn: () => Promise<T>,
       key: Key,
-      options?: IndividualCacheOptions
+      options?: Partial<IndividualCacheOptions>
     ): Promise<T> {
       const { enabled, ttl } = { ...optionsWithDefaults, ...options };
       // Skip the cache entirely if disabled
