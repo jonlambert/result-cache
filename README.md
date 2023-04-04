@@ -1,6 +1,6 @@
 # Cache Promise Results
 
-Cleanly cache the result of any function that returns a promise. API heavily inspired by @tanstack/query.
+Cleanly cache the result of any function that returns a promise. API heavily inspired by [@tanstack/query](https://tanstack.com/query/latest).
 
 Zero dependencies (Redis optional)
 
