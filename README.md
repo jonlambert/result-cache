@@ -1,8 +1,8 @@
 # Cache Promise Results
 
-Cleanly cache the result of any function that returns a promise. API heavily inspired by [@tanstack/query](https://tanstack.com/query/latest).
+Tiny library that caches the result of any function that returns a promise. API heavily inspired by [@tanstack/query](https://tanstack.com/query/latest).
 
-Zero dependencies (Redis optional)
+Fully typed; zero dependencies (Redis optional)
 
 ```bash
 npm install result-cache
