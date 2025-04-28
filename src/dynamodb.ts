@@ -3,10 +3,11 @@ import {
   PutItemCommand,
   GetItemCommand,
   DeleteItemCommand,
-} from "@aws-sdk/client-dynamodb";
-import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
+} from '@aws-sdk/client-dynamodb';
+import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
+import type { CacheDriver } from './base';
 
-export class DynamoDBCacheDriver {
+export class DynamoDBCacheDriver implements CacheDriver {
   private tableName: string;
   private dynamoDB: DynamoDBClient;
 
@@ -30,7 +31,7 @@ export class DynamoDBCacheDriver {
     await this.dynamoDB.send(command);
   }
 
-  async get(key: string): Promise<any | null> {
+  async get(key: string): Promise<unknown | null> {
     const command = new GetItemCommand({
       TableName: this.tableName,
       Key: marshall({ key }),
@@ -62,5 +63,10 @@ export class DynamoDBCacheDriver {
     });
 
     await this.dynamoDB.send(command);
+  }
+
+  async exists(key: string): Promise<boolean> {
+    const result = await this.get(key);
+    return Boolean(result);
   }
 }
